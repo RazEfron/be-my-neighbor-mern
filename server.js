@@ -7,7 +7,6 @@ const mongoose = require('mongoose');
 const https = require('https');
 const fs = require('fs');
 const expressLayouts = require('express-ejs-layouts');
-const expressEjsLayouts = require('express-ejs-layouts');
 
 const app = express();
 
@@ -31,8 +30,11 @@ mongoose.connect(db, {
 .catch(err => console.log(err))
 
 //  EJS
-app.use(expressEjsLayouts);
 app.set("view engine", "ejs")
+app.use(expressLayouts);
+
+// Body Parser
+app.use(express.urlencoded({extended: true}))
 
 //  Routes
 app.use("/", require("./router/index"));
@@ -40,8 +42,8 @@ app.use("/users", require("./router/users"));
 
 //  Server Ports
 const PORT = process.env.PORT || 9000;
-
 let Server
+
 if (process.env.NODE_ENV === 'development') {
     Server = https.createServer({key: key, cert: cert}, app);
 } else {
